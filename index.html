@@ -1,199 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Pastel Finance & Garden</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feebi</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FDE8FF">
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').catch(e => console.warn('SW failed', e));
-    }
-  </script>
 </head>
 <body>
-  <div id="app" class="app light">
-    <header class="topbar">
-      <div class="title">Pastel Finance & Garden</div>
-      <div class="top-actions">
-        <button id="exportBtn" class="icon-btn" title="Export CSV">⤒</button>
-        <button id="importBtn" class="icon-btn" title="Import CSV">⤓</button>
+  <header>
+    <h1>🌸 Feebi 🌸</h1>
+  </header>
+
+  <nav>
+    <button id="financeBtn">Finance</button>
+    <button id="gardenBtn">Garden</button>
+    <button id="gamesBtn">Mini-Games</button>
+  </nav>
+
+  <main>
+    <!-- Finance Section -->
+    <section id="financeSection">
+      <h2>Finance</h2>
+      <div class="finance-form">
+        <input type="text" id="entryName" placeholder="Name">
+        <input type="number" id="entryAmount" placeholder="Amount">
+        <select id="entryType">
+          <option value="earning">Earning</option>
+          <option value="expense">Expense</option>
+        </select>
+        <button id="addEntryBtn">Add Entry</button>
       </div>
-    </header>
+      <ul id="financeList"></ul>
+      <p id="financeTotals"></p>
+    </section>
 
-    <!-- HOME -->
-    <main class="screen" id="screen-home">
-      <section class="card greeting">
-        <div>
-          <h2 id="greeting">Welcome</h2>
-          <p id="greeting-sub">Your pastel finance & pixel garden companion</p>
-          <p class="muted">Coins: <span id="coinCount">0</span></p>
-        </div>
-        <div class="quick-actions">
-          <button id="quickAddEarning" class="pill">+ Income</button>
-          <button id="quickAddExpense" class="pill ghost">+ Expense</button>
-          <button id="dailyBtn" class="pill pastel">Daily Bonus</button>
-        </div>
-      </section>
+    <!-- Garden Section -->
+    <section id="gardenSection">
+      <h2>Garden 🌱</h2>
+      <p>Water: <span id="waterCount">3</span> | Food: <span id="foodCount">3</span></p>
+      <div id="plantsGrid"></div>
+      <div class="plant-controls">
+        <button id="waterPlantBtn">Water Plant</button>
+        <button id="feedPlantBtn">Feed Plant</button>
+        <button id="addPlantBtn">Plant New Seed 🌱</button>
+      </div>
+    </section>
 
-      <section class="card summary" aria-live="polite">
-        <div class="summary-row">
-          <div class="summary-item">
-            <div class="label">Earnings</div>
-            <div id="summary-earn" class="value plus">$0.00</div>
-          </div>
-          <div class="summary-item">
-            <div class="label">Expenses</div>
-            <div id="summary-exp" class="value minus">$0.00</div>
-          </div>
-          <div class="summary-item">
-            <div class="label">Net</div>
-            <div id="summary-net" class="value net">$0.00</div>
-          </div>
-        </div>
-      </section>
+    <!-- Mini-Games Section -->
+    <section id="gamesSection">
+      <h2>Mini-Games 🎮</h2>
+      <p>Play to earn food or water!</p>
+      <div class="game-buttons">
+        <button id="tapGameBtn">Tap Game</button>
+        <button id="matchGameBtn">Match Game</button>
+      </div>
+      <div id="gameArea"></div>
+    </section>
+  </main>
 
-      <section class="card charts">
-        <div class="chart-half">
-          <h3>Totals</h3>
-          <canvas id="barChart" aria-label="Totals bar chart"></canvas>
-        </div>
-        <div class="chart-half">
-          <h3>Expenses by Category</h3>
-          <canvas id="pieChart" aria-label="Expenses pie chart"></canvas>
-        </div>
-      </section>
-    </main>
-
-    <!-- FINANCE -->
-    <main class="screen hidden" id="screen-finance">
-      <section class="card">
-        <h3>Finance</h3>
-        <div class="finance-row">
-          <button id="addBtn" class="btn">Add Item</button>
-          <button id="clearAllBtn" class="danger">Clear Data</button>
-        </div>
-
-        <div class="tabs">
-          <button class="tab active" data-tab="earn">Earnings</button>
-          <button class="tab" data-tab="exp">Expenses</button>
-        </div>
-
-        <div id="earningsContainer" class="list"></div>
-        <div id="expensesContainer" class="list hidden"></div>
-      </section>
-    </main>
-
-    <!-- STATS -->
-    <main class="screen hidden" id="screen-stats">
-      <section class="card">
-        <h3>Stats</h3>
-        <div id="stats-list" class="list"></div>
-      </section>
-    </main>
-
-    <!-- GARDEN -->
-    <main class="screen hidden" id="screen-garden">
-      <section class="card">
-        <h3>Your Garden</h3>
-        <div class="garden" id="gardenSlots"></div>
-        <div class="muted">Tap a plant to water or feed. Happy plants grow and earn coins over time.</div>
-      </section>
-    </main>
-
-    <!-- SHOP -->
-    <main class="screen hidden" id="screen-shop">
-      <section class="card">
-        <h3>Shop</h3>
-        <div id="shopList" class="list shop-grid"></div>
-      </section>
-    </main>
-
-    <!-- SETTINGS -->
-    <main class="screen hidden" id="screen-settings">
-      <section class="card">
-        <h3>Settings</h3>
-        <div class="setting-row">
-          <div>Dark mode</div>
-          <label class="switch"><input id="darkToggle" type="checkbox"><span class="slider"></span></label>
-        </div>
-
-        <div class="setting-row">
-          <div>CSV Import</div>
-          <input id="csvInput" type="file" accept=".csv" />
-        </div>
-
-        <div class="setting-row">
-          <div>App Version</div>
-          <div class="muted">1.0 — Pixel Pastel</div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Modal add/edit finance -->
-    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
-      <form id="itemForm" class="modal-card" onsubmit="return false;">
-        <div class="modal-head">
-          <h3 id="modalTitle">Add Item</h3>
-          <button id="modalClose" type="button" class="icon-btn">✕</button>
-        </div>
-
-        <div class="form-row">
-          <label>Type</label>
-          <div class="segmented">
-            <button type="button" class="seg-btn active" data-type="earning">Earning</button>
-            <button type="button" class="seg-btn" data-type="expense">Expense</button>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <label for="name">Name</label>
-          <input id="name" required placeholder="Salary, Groceries, etc.">
-        </div>
-
-        <div class="form-row">
-          <label for="category">Category</label>
-          <select id="category"></select>
-        </div>
-
-        <div class="form-row two">
-          <div><label for="amount">Amount ($)</label><input id="amount" type="number" step="0.01" required></div>
-          <div><label for="frequency">Frequency</label><select id="frequency"></select></div>
-        </div>
-
-        <div class="form-row two">
-          <div><label for="date">Date</label><input id="date" type="date"></div>
-          <div><label for="note">Note</label><input id="note" placeholder="Optional"></div>
-        </div>
-
-        <div class="form-row actions">
-          <button id="saveItem" class="btn">Save</button>
-          <button id="cancelItem" class="btn ghost">Cancel</button>
-        </div>
-
-        <input id="editIndex" type="hidden" value="-1">
-      </form>
-    </div>
-
-    <!-- Bottom nav -->
-    <nav class="bottom-nav" role="navigation" aria-label="Main">
-      <button class="nav-btn active" data-screen="screen-home">Home</button>
-      <button class="nav-btn" data-screen="screen-finance">Finance</button>
-      <button class="nav-btn" data-screen="screen-stats">Stats</button>
-      <button class="nav-btn" data-screen="screen-garden">Garden</button>
-      <button class="nav-btn" data-screen="screen-shop">Shop</button>
-      <button class="nav-btn" data-screen="screen-settings">Settings</button>
-    </nav>
-  </div>
+  <footer>
+    <p>Feebi App 🌸 All rights reserved</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
-</html>
 </html>
