@@ -5,9 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feebi 🌸</title>
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<style>
+/* ====== CSS ====== */
+body {
+  font-family: 'Patrick Hand', 'Baloo 2', sans-serif;
+  margin:0;padding:0;text-align:center;
+  background:#fff0f5;color:#333;transition:background 0.5s,color 0.5s;
+  overflow-x:hidden;
+}
+header {
+  background:#ffc0cb;padding:20px 0;box-shadow:0 4px 6px rgba(0,0,0,0.1);
+  position:sticky;top:0;z-index:100;
+}
+h1{margin:0;}p{margin:5px 0;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;margin:10px 0;}
+nav button{
+  flex:1 1 40%;max-width:150px;margin:5px;
+  padding:12px;font-size:18px;
+  border:none;border-radius:12px;background:#ffb6c1;color:white;font-weight:bold;
+  cursor:pointer;transition:transform 0.2s,background 0.2s;
+}
+nav button:hover{transform:scale(1.1);background:#ff69b4;}
+main{padding:20px;}
+section{display:none;transition:opacity 0.3s ease;}
+section.active{display:block;opacity:1;}
+input,select,button{font-size:16px;padding:10px;margin:5px;border-radius:8px;border:1px solid #ccc;}
+#gardenGrid,.store-grid{display:flex;overflow-x:auto;padding-bottom:10px;}
+#gardenGrid .plant-card,.store-grid button{min-width:100px;flex:0 0 auto;margin-right:10px;}
+.plant-card{background:#fff;border-radius:12px;padding:10px;box-shadow:0 4px 6px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s;position:relative;}
+.plant-card.grow{transform:scale(1.2);box-shadow:0 6px 10px rgba(0,0,0,0.2);}
+#particleCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+footer{position:sticky;bottom:0;background:#ffc0cb;padding:10px;}
+.store-grid button{background:#ffb6c1;color:white;font-weight:bold;border:none;}
+.store-grid button:hover{background:#ff69b4;transform:scale(1.05);}
+</style>
 </head>
 <body>
+
 <header>
   <h1>🌸 Feebi 🌸</h1>
   <p>Coins: <span id="coins">0</span> | Water: <span id="waterCount">3</span> | Food: <span id="foodCount">3</span></p>
@@ -21,69 +55,220 @@
 </nav>
 
 <main>
-  <!-- Finance -->
-  <section id="financeSection" class="active">
-    <h2>Finance</h2>
-    <div class="finance-form">
-      <input type="text" id="entryName" placeholder="Name">
-      <input type="number" id="entryAmount" placeholder="Amount">
-      <select id="entryType">
-        <option value="earning">Earning</option>
-        <option value="expense">Expense</option>
-      </select>
-      <select id="entryFrequency">
-        <option value="once">Once</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="yearly">Yearly</option>
-      </select>
-      <input type="date" id="entryDate">
-      <input type="text" id="entryNote" placeholder="Notes">
-      <button id="addEntryBtn">Add Entry</button>
-    </div>
-    <ul id="financeList"></ul>
-    <p id="financeTotals"></p>
-  </section>
+<section id="financeSection" class="active">
+  <h2>Finance</h2>
+  <div class="finance-form">
+    <input type="text" id="entryName" placeholder="Name">
+    <input type="number" id="entryAmount" placeholder="Amount">
+    <select id="entryType">
+      <option value="earning">Earning</option>
+      <option value="expense">Expense</option>
+    </select>
+    <select id="entryFrequency">
+      <option value="once">Once</option>
+      <option value="weekly">Weekly</option>
+      <option value="monthly">Monthly</option>
+      <option value="yearly">Yearly</option>
+    </select>
+    <input type="date" id="entryDate">
+    <input type="text" id="entryNote" placeholder="Notes">
+    <button id="addEntryBtn">Add Entry</button>
+  </div>
+  <ul id="financeList"></ul>
+  <p id="financeTotals"></p>
+</section>
 
-  <!-- Garden -->
-  <section id="gardenSection">
-    <h2>Garden 🌱</h2>
-    <div id="gardenGrid"></div>
-    <div class="plant-controls">
-      <button id="waterPlantBtn">Water 💧</button>
-      <button id="feedPlantBtn">Feed 🍎</button>
-    </div>
-  </section>
+<section id="gardenSection">
+  <h2>Garden 🌱</h2>
+  <button id="dailyBonusBtn">Claim Daily Bonus 🎁</button>
+  <div id="gardenGrid"></div>
+  <div class="plant-controls">
+    <button id="waterPlantBtn">Water 💧</button>
+    <button id="feedPlantBtn">Feed 🍎</button>
+  </div>
+  <canvas id="particleCanvas"></canvas>
+  <audio id="waterSound" src="https://www.soundjay.com/water/sounds/water-drop-1.mp3"></audio>
+  <audio id="feedSound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+  <audio id="rewardSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+</section>
 
-  <!-- Mini-Games -->
-  <section id="gamesSection">
-    <h2>Mini-Games 🎮</h2>
-    <p>Play to earn coins, water, and food!</p>
-    <div class="game-buttons">
-      <button id="tapGameBtn">Tap Game</button>
-      <button id="matchGameBtn">Match Game</button>
-    </div>
-    <div id="gameArea"></div>
-  </section>
+<section id="gamesSection">
+  <h2>Mini-Games 🎮</h2>
+  <div class="game-buttons">
+    <button id="tapGameBtn">Tap Game</button>
+    <button id="matchGameBtn">Match Game</button>
+  </div>
+  <div id="gameArea"></div>
+</section>
 
-  <!-- Store -->
-  <section id="storeSection">
-    <h2>Store 🛒</h2>
-    <div id="plantStore">
-      <h3>Plants</h3>
-      <div class="store-grid" id="plantStoreGrid"></div>
-    </div>
-    <div id="potStore">
-      <h3>Pots</h3>
-      <div class="store-grid" id="potStoreGrid"></div>
-    </div>
-  </section>
+<section id="storeSection">
+  <h2>Store 🛒</h2>
+  <div id="plantStore"><h3>Plants</h3><div class="store-grid" id="plantStoreGrid"></div></div>
+  <div id="potStore"><h3>Pots</h3><div class="store-grid" id="potStoreGrid"></div></div>
+</section>
 </main>
 
 <footer>
   <p>Feebi App 🌸 All rights reserved</p>
 </footer>
 
-<script src="script.js"></script>
-</body>
-</html>
+<script>
+// ======= JS =======
+
+// Sections
+const sections={
+  finance: document.getElementById('financeSection'),
+  garden: document.getElementById('gardenSection'),
+  games: document.getElementById('gamesSection'),
+  store: document.getElementById('storeSection')
+};
+
+function showSection(section){
+  Object.values(sections).forEach(s=>{
+    if(s===section){s.style.opacity=0;s.classList.add('active');let op=0;const fadeIn=setInterval(()=>{op+=0.05;s.style.opacity=op;if(op>=1)clearInterval(fadeIn);},10);}
+    else{s.style.opacity=1;s.classList.remove('active');}
+  });
+}
+document.getElementById('financeBtn').onclick=()=>showSection(sections.finance);
+document.getElementById('gardenBtn').onclick=()=>showSection(sections.garden);
+document.getElementById('gamesBtn').onclick=()=>showSection(sections.games);
+document.getElementById('storeBtn').onclick=()=>showSection(sections.store);
+
+// Resources
+let coins=Number(localStorage.getItem('coins'))||10;
+let water=Number(localStorage.getItem('water'))||3;
+let food=Number(localStorage.getItem('food'))||3;
+const coinsDisplay=document.getElementById('coins');
+const waterDisplay=document.getElementById('waterCount');
+const foodDisplay=document.getElementById('foodCount');
+
+function animateResourceChange(el, oldVal, newVal){
+  let current=oldVal;
+  const increment=newVal>oldVal?1:-1;
+  const anim=setInterval(()=>{
+    current+=increment;
+    el.textContent=current;
+    if(current===newVal)clearInterval(anim);
+  },50);
+}
+function updateResourcesAnimated(oldCoins,oldWater,oldFood){
+  animateResourceChange(coinsDisplay,oldCoins,coins);
+  animateResourceChange(waterDisplay,oldWater,water);
+  animateResourceChange(foodDisplay,oldFood,food);
+}
+function updateResources(){coinsDisplay.textContent=coins;waterDisplay.textContent=water;foodDisplay.textContent=food;}
+updateResources();
+
+// ====== Finance ======
+let financeEntries=JSON.parse(localStorage.getItem('financeEntries'))||[];
+function saveFinance(){localStorage.setItem('financeEntries',JSON.stringify(financeEntries)); displayFinance();}
+function displayFinance(){
+  const list=document.getElementById('financeList'); list.innerHTML='';
+  let totalE=0,totalX=0;
+  financeEntries.forEach((e,i)=>{
+    const li=document.createElement('li');
+    li.textContent=`${e.name} - $${e.amount} (${e.type}) | ${e.frequency} | ${e.date||''} | ${e.note||''}`;
+    const btn=document.createElement('button'); btn.textContent='Remove';
+    btn.onclick=()=>{financeEntries.splice(i,1); saveFinance();};
+    li.appendChild(btn); list.appendChild(li);
+    e.type==='earning'? totalE+=e.amount: totalX+=e.amount;
+  });
+  document.getElementById('financeTotals').textContent=`Total Earnings: $${totalE} | Total Expenses: $${totalX} | Net: $${totalE-totalX}`;
+}
+document.getElementById('addEntryBtn').onclick=()=>{
+  const name=document.getElementById('entryName').value;
+  const amount=Number(document.getElementById('entryAmount').value);
+  const type=document.getElementById('entryType').value;
+  const frequency=document.getElementById('entryFrequency').value;
+  const date=document.getElementById('entryDate').value;
+  const note=document.getElementById('entryNote').value;
+  if(name&&amount){financeEntries.push({name,amount,type,frequency,date,note}); saveFinance();}
+};
+saveFinance();
+
+// ====== Garden ======
+let plants=JSON.parse(localStorage.getItem('plants'))||[];
+const gardenGrid=document.getElementById('gardenGrid');
+const particleCanvas=document.getElementById('particleCanvas');
+const ctx=particleCanvas.getContext('2d');
+particleCanvas.width=window.innerWidth;
+particleCanvas.height=window.innerHeight;
+
+// Sounds
+const waterSound=document.getElementById('waterSound');
+const feedSound=document.getElementById('feedSound');
+const rewardSound=document.getElementById('rewardSound');
+
+// Plant types
+const plantTypes=[
+  {name:'Sunflower',cost:5,images:['https://i.ibb.co/LtB4Y6Y/sunflower-seed.png','https://i.ibb.co/3kV7J7Q/sunflower-sprout.png','https://i.ibb.co/zfGZtVW/sunflower-bloom.png']},
+  {name:'Rose',cost:10,images:['https://i.ibb.co/5vhgkSn/rose-seed.png','https://i.ibb.co/8gL0XrX/rose-sprout.png','https://i.ibb.co/7kZnQfx/rose-bloom.png']},
+  {name:'Tulip',cost:7,images:['https://i.ibb.co/TMbM3F4/tulip-seed.png','https://i.ibb.co/6X8T2Vw/tulip-sprout.png','https://i.ibb.co/3ShM1Z9/tulip-bloom.png']},
+  {name:'Cactus',cost:3,images:['https://i.ibb.co/FVYZQ6J/cactus-seed.png','https://i.ibb.co/WnD8Tcz/cactus-sprout.png','https://i.ibb.co/tJxhw0K/cactus-bloom.png']},
+  {name:'Daisy',cost:4,images:['https://i.ibb.co/1mZRkQ3/daisy-seed.png','https://i.ibb.co/XFv3PnR/daisy-sprout.png','https://i.ibb.co/xDyt0Xk/daisy-bloom.png']},
+  {name:'Orchid',cost:12,images:['https://i.ibb.co/3hHnP2M/orchid-seed.png','https://i.ibb.co/2PWXfRL/orchid-sprout.png','https://i.ibb.co/vZt5yCg/orchid-bloom.png']},
+  {name:'Lily',cost:8,images:['https://i.ibb.co/wCw5vZs/lily-seed.png','https://i.ibb.co/7KLVK0x/lily-sprout.png','https://i.ibb.co/J7V0Ftz/lily-bloom.png']},
+  {name:'Bonsai',cost:15,images:['https://i.ibb.co/6bKx7JH/bonsai-seed.png','https://i.ibb.co/7Ym7G7K/bonsai-sprout.png','https://i.ibb.co/f0p5d2g/bonsai-bloom.png']},
+  {name:'Lavender',cost:6,images:['https://i.ibb.co/6BXMQ0y/lavender-seed.png','https://i.ibb.co/1ZKjJmH/lavender-sprout.png','https://i.ibb.co/0FJH1MK/lavender-bloom.png']},
+  {name:'Cherry Blossom',cost:20,images:['https://i.ibb.co/BcKQGfH/cherry-seed.png','https://i.ibb.co/Z2Z1WrX/cherry-sprout.png','https://i.ibb.co/Y7B0Z8X/cherry-bloom.png']}
+];
+
+// Pot types
+const potTypes=['Red','Blue','Yellow','Green','Pink','Purple','Orange','Brown','White','Black'];
+
+// ====== Garden Display ======
+function saveGarden(){localStorage.setItem('plants',JSON.stringify(plants)); updateResources(); displayGarden();}
+function displayGarden(){
+  gardenGrid.innerHTML='';
+  plants.forEach(p=>{
+    const div=document.createElement('div'); div.className='plant-card';
+    let stageIndex=Math.min(p.age||0,2);
+    const happiness = p.water>=3&&p.food>=3?'😄':(p.water>=2&&p.food>=2?'😐':'😢');
+    div.innerHTML=`<img src="${p.images[stageIndex]}" alt="${p.name}" class="grow"><p>${p.name} (${p.pot||'Default'})</p><p>Water: ${p.water||0}/5 | Food: ${p.food||0}/5</p><p>Happiness: ${happiness}</p>`;
+    gardenGrid.appendChild(div);
+  });
+}
+displayGarden();
+
+// ====== Particles ======
+let particles=[];
+function createParticles(x,y,color){for(let i=0;i<10;i++){particles.push({x:x,y:y,dx:(Math.random()-0.5)*2,dy:Math.random()*-2-1,life:50,color});}}
+function particleBurst(x,y,color,count=20){for(let i=0;i<count;i++){particles.push({x:x,y:y,dx:(Math.random()-0.5)*4,dy:(Math.random()-1)*4,life:Math.random()*60+30,color});}}
+function drawParticles(){ctx.clearRect(0,0,particleCanvas.width,particleCanvas.height);particles.forEach((p,i)=>{ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();p.x+=p.dx;p.y+=p.dy;p.life--;if(p.life<=0)particles.splice(i,1);});requestAnimationFrame(drawParticles);}
+drawParticles();
+window.addEventListener('resize',()=>{particleCanvas.width=window.innerWidth;particleCanvas.height=window.innerHeight;});
+
+// ====== Water & Feed ======
+function waterPlant(){if(water<=0){alert("No water! Play mini-games."); return;}plants.forEach(p=>{if((p.water||0)<5)p.water=(p.water||0)+1;});water--;waterSound.play();plants.forEach((_,i)=>particleBurst(100+i*110,300,'#00f',15));saveGarden();}
+function feedPlant(){if(food<=0){alert("No food! Play mini-games."); return;}plants.forEach(p=>{if((p.food||0)<5)p.food=(p.food||0)+1;});food--;feedSound.play();plants.forEach((_,i)=>particleBurst(100+i*110,300,'#f00',15));saveGarden();}
+document.getElementById('waterPlantBtn').onclick=waterPlant;
+document.getElementById('feedPlantBtn').onclick=feedPlant;
+
+// ====== Daily Bonus ======
+document.getElementById('dailyBonusBtn').onclick = ()=>{
+  const today=new Date().toISOString().slice(0,10);
+  const lastClaim=localStorage.getItem('lastBonus')||'';
+  if(lastClaim===today){alert("Already claimed today!"); return;}
+  const bonusCoins=Math.floor(Math.random()*8)+3;
+  const bonusWater=Math.floor(Math.random()*3)+1;
+  const bonusFood=Math.floor(Math.random()*3)+1;
+  const oldCoins=coins, oldWater=water, oldFood=food;
+  coins+=bonusCoins; water+=bonusWater; food+=bonusFood;
+  localStorage.setItem('lastBonus',today);
+  rewardSound.play();
+  particleBurst(window.innerWidth/2,200,'#ff69b4',50);
+  updateResourcesAnimated(oldCoins,oldWater,oldFood);
+  alert(`🌸 Daily Bonus! 🌸\nCoins: +${bonusCoins}\nWater: +${bonusWater}\nFood: +${bonusFood}`);
+};
+
+// ====== Mini-Games ======
+const gameArea=document.getElementById('gameArea');
+document.getElementById('tapGameBtn').onclick = () => {
+    gameArea.innerHTML = `<p>Tap the button as fast as you can for 5 seconds!</p><button id="tapBtn" style="font-size:20px;padding:10px 20px;">Tap Me!</button><p>Score: <span id="tapScore">0</span></p>`;
+    let score = 0;
+    const tapScore = document.getElementById('tapScore');
+    const tapBtn = document.getElementById('tapBtn');
+    tapBtn.onclick = () => {
+        score++;
+        tapScore.textContent = score;
+        tapBtn.style.transform = `scale
