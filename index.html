@@ -4,20 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feebi 🌸</title>
+<!-- Link CSS -->
 <link rel="stylesheet" href="style.css">
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- Background Sky -->
 <div id="sky"></div>
+<!-- Sun and Moon for Day/Night Cycle -->
 <div class="sun" id="sun"></div>
 <div class="moon" id="moon"></div>
 
+<!-- Header with Resources -->
 <header>
 <h1>🌸 Feebi 🌸</h1>
-<p>Coins: <span id="coins">0</span> | Water: <span id="waterCount">3</span> | Food: <span id="foodCount">3</span> | Level: <span id="level">1</span> | XP: <span id="xp">0</span></p>
+<p>
+Coins: <span id="coins">0</span> | 
+Water: <span id="waterCount">3</span> | 
+Food: <span id="foodCount">3</span> | 
+Level: <span id="level">1</span> | 
+XP: <span id="xp">0</span>
+</p>
 </header>
 
+<!-- Navigation Buttons -->
 <nav>
 <button id="financeBtn">Finance 💰</button>
 <button id="gardenBtn">Garden 🌱</button>
@@ -26,6 +38,7 @@
 </nav>
 
 <main>
+<!-- Finance Section -->
 <section id="financeSection">
 <h2>Finance</h2>
 <div class="finance-form">
@@ -49,6 +62,7 @@
 <p id="financeTotals"></p>
 </section>
 
+<!-- Garden Section -->
 <section id="gardenSection">
 <h2>Garden 🌱</h2>
 <button id="dailyBonusBtn">Claim Daily Bonus 🎁</button>
@@ -59,6 +73,7 @@
 </div>
 </section>
 
+<!-- Mini-Games Section -->
 <section id="gamesSection">
 <h2>Mini-Games 🎮</h2>
 <div id="gameArea">
@@ -67,17 +82,26 @@
 </div>
 </section>
 
+<!-- Store Section -->
 <section id="storeSection">
 <h2>Store 🛒</h2>
-<div id="plantStore"><h3>Plants</h3><div class="store-grid" id="plantStoreGrid"></div></div>
-<div id="potStore"><h3>Pots</h3><div class="store-grid" id="potStoreGrid"></div></div>
+<div id="plantStore">
+<h3>Plants</h3>
+<div class="store-grid" id="plantStoreGrid"></div>
+</div>
+<div id="potStore">
+<h3>Pots</h3>
+<div class="store-grid" id="potStoreGrid"></div>
+</div>
 </section>
 </main>
 
+<!-- Footer -->
 <footer>
 <p>Feebi App 🌸 All rights reserved</p>
 </footer>
 
+<!-- Link JS -->
 <script src="script.js"></script>
 </body>
 </html>
