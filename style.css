@@ -4,6 +4,7 @@ body {
   text-align: center;
   background: #fff0f5;
   color: #333;
+  transition: background 0.5s, color 0.5s;
 }
 
 header {
@@ -21,9 +22,9 @@ nav button {
   border: none; border-radius: 12px;
   background-color: #ffb6c1; color: white;
   font-weight: bold; cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
-nav button:hover { transform: scale(1.1); }
+nav button:hover { transform: scale(1.1); background:#ff69b4; }
 
 main { padding: 20px; }
 section { display: none; }
@@ -39,12 +40,16 @@ button:hover { background: #ff69b4; color: white; }
 .plant-card {
   background: #fff; border-radius: 12px; padding: 10px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.5s;
 }
 
-.plant-card img { width: 60px; height: 60px; }
+.plant-card img { width: 60px; height: 60px; transition: transform 0.5s; }
 
 .plant-controls button, .game-buttons button { margin: 5px; }
 
 .store-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-top: 10px;
 }
+
+/* Animate plant growth */
+.grow { transform: scale(1.2); }
