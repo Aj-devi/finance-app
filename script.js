@@ -77,31 +77,30 @@ function displayGarden(){
   gardenGrid.innerHTML='';
   plants.forEach(p=>{
     const div=document.createElement('div'); div.className='plant-card';
-    let stageIndex = Math.min(p.age,2); // 0=seed,1=sprout,2=bloom
+    let stageIndex = Math.min(p.age,2);
+    const happiness = p.water>=3 && p.food>=3 ? '😄' : (p.water>=2 && p.food>=2 ? '😐' : '😢');
     div.innerHTML=`
-      <img src="${p.images[stageIndex]}" alt="${p.name}">
+      <img src="${p.images[stageIndex]}" alt="${p.name}" class="grow">
       <p>${p.name} (${p.pot})</p>
       <p>Water: ${p.water}/5 | Food: ${p.food}/5</p>
-      <p>Happiness: ${p.water>=3&&p.food>=3?'😄':(p.water>=2&&p.food>=2?'😐':'😢')}</p>
+      <p>Happiness: ${happiness}</p>
     `;
     gardenGrid.appendChild(div);
   });
 }
 displayGarden();
 
-function waterPlant(){ if(water<=0){ alert("No water! Play mini-games."); return; } plants.forEach(p=>{ if(p.water<5) p.water++; }); water--; saveGarden(); }
-function feedPlant(){ if(food<=0){ alert("No food! Play mini-games."); return; } plants.forEach(p=>{ if(p.food<5) p.food++; }); food--; saveGarden(); }
-
+function waterPlant(){ if(water<=0){ alert("No water! Play mini-games."); return; } plants.forEach(p=>{ if(p.water<5)p.water++; }); water--; saveGarden(); }
+function feedPlant(){ if(food<=0){ alert("No food! Play mini-games."); return; } plants.forEach(p=>{ if(p.food<5)p.food++; }); food--; saveGarden(); }
 document.getElementById('waterPlantBtn').onclick=waterPlant;
 document.getElementById('feedPlantBtn').onclick=feedPlant;
 
-// Age plants every minute
-setInterval(()=>{ plants.forEach(p=>{ if(p.age<2) p.age++; }); saveGarden(); },60000);
+// Age plants every minute with animation
+setInterval(()=>{ plants.forEach(p=>{ if(p.age<2)p.age++; }); saveGarden(); },60000);
 
 // ======= STORE =======
 const plantStoreGrid=document.getElementById('plantStoreGrid');
 const potStoreGrid=document.getElementById('potStoreGrid');
-
 function displayStore(){
   plantStoreGrid.innerHTML=''; potStoreGrid.innerHTML='';
   plantTypes.forEach(p=>{
@@ -135,12 +134,7 @@ document.getElementById('tapGameBtn').onclick=()=>{
 };
 
 document.getElementById('matchGameBtn').onclick=()=>{
-  gameArea.innerHTML='<p>Match letters!</p>';
-  const letters=['A','B','A','B']; const buttons=[]; let first=null; let score=0;
-  letters.forEach(l=>{ const b=document.createElement('button'); b.textContent=l; buttons.push(b); gameArea.appendChild(b);
-    b.onclick=()=>{
-      if(!first) first=b; else { if(first.textContent===b.textContent) score++; first=null; else first=null; }
-    };
-  });
+  gameArea.innerHTML='<p>Match letters!</p>'; const letters=['A','B','A','B']; let first=null; let score=0;
+  letters.forEach(l=>{ const b=document.createElement('button'); b.textContent=l; gameArea.appendChild(b); b.onclick=()=>{ if(!first) first=b; else{ if(first.textContent===b.textContent) score++; first=null; else first=null; } }; });
   setTimeout(()=>{ alert(`You earned ${score} coins, ${score} water, ${score} food!`); coins+=score; water+=score; food+=score; saveGarden(); gameArea.innerHTML=''; },10000);
 };
